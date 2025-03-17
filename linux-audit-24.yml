@@ -1,0 +1,11 @@
+---
+- name: ubuntu24 CIS Audit
+  hosts: ubuntu24
+  become: true
+  roles:
+    - role: UBUNTU24-CIS-Audit-devel
+      vars:
+        setup_audit: true
+        run_audit: true
+        audit_output_path: "/etc/ansible/log/audit.log"
+        audit_done: true
