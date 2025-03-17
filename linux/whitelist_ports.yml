@@ -1,0 +1,12 @@
+- name: 取得目前開啟的 Ports
+  shell: "netstat -tuln | awk '{print $4}' | awk -F ':' '{print $NF}' | sort -u"
+  register: open_ports
+  changed_when: false
+
+- name: 設定允許的 Ports
+  set_fact:
+    whitelist_ports: [8080, 8443, 1812, 1813, 3306]
+
+- name: 過濾不在白名單的 Ports
+  set_fact:
+    ports_to_modify: "{{ open_ports.stdout_lines | map('int') | difference(whitelist_ports) }}"
