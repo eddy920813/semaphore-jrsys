@@ -1,0 +1,22 @@
+---
+- name: Test connection to Linux hosts
+  hosts: ubuntu22,ubuntu24
+  tasks:
+    - name: Test connection
+      ping:
+      register: linux_message
+
+    - name: Print debug message for Linux
+      debug:
+        msg: "{{ linux_message }}"
+
+          #- name: Test connection to Windows hosts
+          #hosts: windows
+          #tasks:
+          #- name: Test connection
+          #win_ping:
+          #register: windows_message
+
+          #- name: Print debug message for Windows
+          #debug:
+          #msg: "{{ windows_message }}"

@@ -1,0 +1,38 @@
+---  
+- name: Harden Ubuntu 22.04 LTS according to CIS benchmarks  
+  hosts: ubuntu22  
+  become: yes  
+  tasks:  
+
+    - name: Ensure the latest security updates are installed  
+      apt:  
+        update_cache: yes  
+        upgrade: dist  
+
+    - name: Disable root login  
+      lineinfile:  
+        path: /etc/ssh/sshd_config  
+        regexp: '^PermitRootLogin'  
+        line: 'PermitRootLogin no'  
+      notify: restart ssh  
+
+    - name: Ensure package manager is set to always upgrade to latest versions  
+      lineinfile:  
+        path: /etc/apt/apt.conf.d/50unattended-upgrades  
+        regexp: '^//Unattended-Upgrade::Allowed-Origins'  
+        line: 'Unattended-Upgrade::Allowed-Origins "Ubuntu focal-security";'  
+
+    - name: Ensure firewall is installed and active  
+      apt:  
+        name: ufw  
+        state: present  
+
+    - name: Ensure UFW is enabled  
+      ufw:  
+        state: enabled  
+
+  handlers:  
+    - name: restart ssh  
+      service:  
+        name: ssh  
+        state: restarted

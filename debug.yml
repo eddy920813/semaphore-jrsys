@@ -1,0 +1,15 @@
+- name: Debug OS info
+  hosts: ubuntu22
+  become: true
+  gather_facts: yes  # 确保收集系统信息
+  tasks:
+    - name: Show OS info
+      ansible.builtin.debug:
+        msg: "Detected OS: {{ ansible_facts.distribution }} {{ ansible_facts.distribution_major_version }}"
+
+
+
+
+
+
+

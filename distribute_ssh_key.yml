@@ -1,0 +1,10 @@
+---
+- name: Distribute SSH public key to all hosts
+  hosts: /etc/ansible/linux/hosts
+  become: true
+  tasks:
+    - name: Copy the SSH public key to remote hosts
+      authorized_key:
+        user: "{{ jrsys }}"
+        state: present
+        key: "{{ lookup('file', '/home/jrsys/.ssh/id_ed25519.pub') }}"

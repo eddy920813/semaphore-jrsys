@@ -1,0 +1,50 @@
+---
+- name: ubuntu22 CIS Audit
+  hosts: ubuntu22
+  become: true
+  roles:
+    - role: UBUNTU22-CIS-Audit-devel
+      vars:
+        setup_audit: true
+        run_audit: true
+        audit_output_path: "/etc/ansible/log/audit.log"
+        audit_done: true
+
+- name: Remediate Ubuntu CIS
+  hosts: ubuntu22
+  become: true
+  roles:
+    - role: UBUNTU22-CIS-devel
+      vars:
+        ubtu22cis_allow_auditd_uid_user_exclusions: true
+        audit_output_path : "/etc/ansible/log/remediate_audit.log"
+        when: audit_done is defined and audit_done == true
+
+    #tasks:
+
+    #- name: Copy Goss binary to target machine
+    # copy:
+    #   src: /usr/local/bin/goss  # 控制端上的 Goss 文件路径
+    #   dest: /usr/local/bin/goss # 目标机器上的路径
+    #   mode: '0755'
+
+    #- name: Verify Goss installation
+    # command: goss --version
+    # register: goss_version
+
+        #- name: Display Goss version
+        #debug:
+        #msg: "Goss version installed: {{ goss_version.stdout }}"
+
+    #- name: Save audit_message to file
+    # copy:
+    #   content: "Goss version installed on {{ ansible_hostname }}: {{ audit_message.stdout }}"
+    #   dest: /usr/local/bin/audit_message.txt
+    #   mode: '0755'
+
+          #- name: Fetch audit_message.txt to control node
+          #fetch:
+          #src: /usr/local/bin/audit_message.txt
+          #dest: /etc/ansible/log/
+          #flat: yes
+
