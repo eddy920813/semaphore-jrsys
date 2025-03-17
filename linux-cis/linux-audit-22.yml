@@ -1,0 +1,11 @@
+---
+- name: ubuntu22 CIS Audit
+  hosts: ubuntu22
+  become: true
+  roles:
+    - role: UBUNTU22-CIS-Audit-devel
+      vars:
+        setup_audit: true
+        run_audit: true
+        audit_output_path: "/etc/ansible/log/audit.log"
+        audit_done: true

@@ -1,0 +1,35 @@
+#---
+#- name: Apply CIS Benchmarks for Ubuntu 24.04
+  #  hosts: ubuntu24
+    #  become: yes
+    #  roles:
+    #    - role: UBUNTU24-CIS-devel
+---
+- name: Run UBUNTU24-CIS-devel with error ignore for usb-storage
+  hosts: ubuntu24
+  roles:
+    - role: UBUNTU24-CIS-devel
+
+  tasks:
+    - name: Force remove usb-storage module
+      command: modprobe -r usb-storage
+      ignore_errors: yes
+
+    - name: Check if /etc/motd exists
+      stat:
+        path: /etc/motd
+      register: motd_stat
+
+    - name: Create /etc/motd if absent
+      file:
+        path: /etc/motd
+        state: touch
+      when: motd_stat.stat.exists == false
+
+    - name: Check ufw status
+      command: /usr/sbin/ufw status verbose
+      become: true
+      become_user: jrsys
+      become_method: sudo
+      vars:
+        ansible_become_password: "1qaz2wsx"
